@@ -1,0 +1,23 @@
+#!/bin/bash
+
+yum update -y
+yum install -y git docker
+
+# Allow connecting to docker via ssh forwarding
+# Example:
+# ssh -i deployer_rsa -nNT -L 2375:127.0.0.1:2375 ec2-user@18.188.106.173
+# export DOCKER_HOST=tcp://localhost:2375
+# docker image ls
+tee /etc/docker/daemon.json << EOF
+{
+  "hosts": [
+    "tcp://0.0.0.0:2375",
+    "unix:///var/run/docker.sock"
+  ]
+}
+EOF
+
+service docker start
+usermod -a -G docker ec2-user
+
+docker swarm init
