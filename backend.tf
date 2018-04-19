@@ -1,9 +1,9 @@
 terraform {
   backend "s3" {
     profile              = "synacor"
-    workspace_key_prefix = "workspace"
     bucket               = "zm-tf-state"
-    key                  = "app.tfstate"
+    workspace_key_prefix = "env"
+    key                  = "zimbrax.tfstate"
     region               = "us-east-1"
   }
 }

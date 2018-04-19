@@ -5,7 +5,7 @@ resource "aws_key_pair" "blockchain_deployer" {
 
 resource "aws_security_group" "blockchain_app" {
   name   = "blockchain_app"
-  vpc_id = "${data.terraform_remote_state.base.blockchain_vpc_id}"
+  vpc_id = "${local.blockchain_vpc_id}"
 
   ingress {
     from_port        = 80
@@ -56,18 +56,18 @@ resource "aws_security_group" "blockchain_app" {
   }
 
   tags {
-    Name      = "${terraform.workspace}_sg_blockchain_app"
-    Workspace = "${terraform.workspace}"
-    Project   = "blockchain"
+    Name        = "${local.environment}_sg_blockchain_app"
+    Environment = "${local.environment}"
+    Project     = "blockchain"
   }
 }
 
 resource "aws_elb" "blockchain_app" {
   name    = "blockchain-app"
-  subnets = ["${data.terraform_remote_state.base.blockchain_public_subnet_id}"]
+  subnets = ["${local.blockchain_public_subnet_id}"]
 
   listener {
-    ssl_certificate_id = "${aws_acm_certificate.blockchain_app.id}"
+    ssl_certificate_id = "${local.blockchain_app_certificate_id}"
     lb_port            = 443
     lb_protocol        = "https"
     instance_port      = 443
@@ -75,7 +75,7 @@ resource "aws_elb" "blockchain_app" {
   }
 
   listener {
-    ssl_certificate_id = "${aws_acm_certificate.blockchain_app.id}"
+    ssl_certificate_id = "${local.blockchain_app_certificate_id}"
     lb_port            = 8443
     lb_protocol        = "https"
     instance_port      = 8081
@@ -95,9 +95,9 @@ resource "aws_elb" "blockchain_app" {
   connection_draining       = true
 
   tags {
-    Name      = "${terraform.workspace}_elb_blockchain_app"
-    Workspace = "${terraform.workspace}"
-    Project   = "blockchain"
+    Name        = "${local.environment}_elb_blockchain_app"
+    Environment = "${local.environment}"
+    Project     = "blockchain"
   }
 }
 
@@ -106,9 +106,9 @@ resource "aws_eip" "blockchain_manager1" {
   vpc      = true
 
   tags {
-    Name      = "${terraform.workspace}_eip_blockchain_manager1"
-    Workspace = "${terraform.workspace}"
-    Project   = "blockchain"
+    Name        = "${local.environment}_eip_blockchain_manager1"
+    Environment = "${local.environment}"
+    Project     = "blockchain"
   }
 }
 
@@ -116,7 +116,7 @@ resource "aws_instance" "blockchain_manager1" {
   ami                    = "ami-31c7f654"
   instance_type          = "r4.2xlarge"
   key_name               = "${aws_key_pair.blockchain_deployer.id}"
-  subnet_id              = "${data.terraform_remote_state.base.blockchain_public_subnet_id}"
+  subnet_id              = "${local.blockchain_public_subnet_id}"
   source_dest_check      = false
   vpc_security_group_ids = ["${aws_security_group.blockchain_app.id}"]
   user_data              = "${file("${path.module}/userdata/manager1")}"
@@ -127,9 +127,9 @@ resource "aws_instance" "blockchain_manager1" {
   }
 
   tags {
-    Name      = "${terraform.workspace}_instance_blockchain_manager1"
-    SwarmRole = "manager"
-    Workspace = "${terraform.workspace}"
-    Project   = "blockchain"
+    Name        = "${local.environment}_instance_blockchain_manager1"
+    SwarmRole   = "manager"
+    Environment = "${local.environment}"
+    Project     = "blockchain"
   }
 }

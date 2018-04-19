@@ -3,9 +3,9 @@ resource "aws_eip" "blockchain_dev" {
   vpc      = true
 
   tags {
-    Name      = "${terraform.workspace}_eip_blockchain_dev"
-    Workspace = "${terraform.workspace}"
-    Project   = "blockchain"
+    Name        = "${local.environment}_eip_blockchain_dev"
+    Environment = "${local.environment}"
+    Project     = "blockchain"
   }
 }
 
@@ -13,7 +13,7 @@ resource "aws_instance" "blockchain_dev" {
   ami                    = "ami-31c7f654"
   instance_type          = "t2.2xlarge"
   key_name               = "${aws_key_pair.blockchain_deployer.id}"
-  subnet_id              = "${data.terraform_remote_state.base.blockchain_public_subnet_id}"
+  subnet_id              = "${local.blockchain_public_subnet_id}"
   source_dest_check      = false
   vpc_security_group_ids = ["${aws_security_group.blockchain_app.id}"]
   user_data              = "${file("${path.module}/userdata/dev")}"
@@ -24,8 +24,8 @@ resource "aws_instance" "blockchain_dev" {
   }
 
   tags {
-    Name      = "${terraform.workspace}_instance_blockchain_dev"
-    Workspace = "${terraform.workspace}"
-    Project   = "blockchain"
+    Name        = "${local.environment}_instance_blockchain_dev"
+    Environment = "${local.environment}"
+    Project     = "blockchain"
   }
 }

@@ -3,9 +3,9 @@ resource "aws_vpc" "blockchain" {
   enable_dns_hostnames = true
 
   tags {
-    Name      = "${terraform.workspace}_vpc_blockchain"
-    Workspace = "${terraform.workspace}"
-    Project   = "blockchain"
+    Name        = "${local.environment}_vpc_blockchain"
+    Environment = "${local.environment}"
+    Project     = "blockchain"
   }
 }
 
@@ -19,9 +19,9 @@ resource "aws_subnet" "blockchain_public" {
   availability_zone = "us-east-2a"
 
   tags {
-    Name      = "${terraform.workspace}_subnet_blockchain_public"
-    Workspace = "${terraform.workspace}"
-    Project   = "blockchain"
+    Name        = "${local.environment}_subnet_blockchain_public"
+    Environment = "${local.environment}"
+    Project     = "blockchain"
   }
 }
 
@@ -35,9 +35,9 @@ resource "aws_subnet" "blockchain_private" {
   availability_zone = "us-east-2a"
 
   tags {
-    Name      = "${terraform.workspace}_subnet_blockchain_private"
-    Workspace = "${terraform.workspace}"
-    Project   = "blockchain"
+    Name        = "${local.environment}_subnet_blockchain_private"
+    Environment = "${local.environment}"
+    Project     = "blockchain"
   }
 }
 
@@ -50,9 +50,9 @@ resource "aws_route_table" "blockchain_public" {
   }
 
   tags {
-    Name      = "${terraform.workspace}_rt_blockchain_public"
-    Workspace = "${terraform.workspace}"
-    Project   = "blockchain"
+    Name        = "${local.environment}_rt_blockchain_public"
+    Environment = "${local.environment}"
+    Project     = "blockchain"
   }
 }
 
@@ -65,8 +65,8 @@ resource "aws_internet_gateway" "blockchain" {
   vpc_id = "${aws_vpc.blockchain.id}"
 
   tags {
-    Name      = "${terraform.workspace}_igw_blockchain"
-    Workspace = "${terraform.workspace}"
-    Project   = "blockchain"
+    Name        = "${local.environment}_igw_blockchain"
+    Environment = "${local.environment}"
+    Project     = "blockchain"
   }
 }
