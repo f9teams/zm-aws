@@ -1,8 +1,3 @@
-resource "aws_key_pair" "blockchain_deployer" {
-  key_name   = "blockchain_deployer"
-  public_key = "${file("${path.module}/deployer_rsa.pub")}"
-}
-
 resource "aws_security_group" "blockchain_app" {
   name   = "blockchain_app"
   vpc_id = "${local.blockchain_vpc_id}"
@@ -62,8 +57,35 @@ resource "aws_security_group" "blockchain_app" {
   }
 }
 
+resource "aws_security_group" "blockchain_swarm" {
+  name   = "blockchain_swarm"
+  vpc_id = "${local.blockchain_vpc_id}"
+
+  ingress {
+    from_port        = 2375
+    to_port          = 2375
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags {
+    Name        = "${local.environment}_sg_blockchain_swarm"
+    Environment = "${local.environment}"
+    Project     = "blockchain"
+  }
+}
+
 resource "aws_elb" "blockchain_app" {
-  name    = "blockchain-app"
+  name    = "${local.environment}-blockchain-app"
   subnets = ["${local.blockchain_public_subnet_id}"]
 
   listener {
@@ -112,14 +134,23 @@ resource "aws_eip" "blockchain_manager1" {
   }
 }
 
+output "blockchain_manager1_private_ip" {
+  value = "${aws_instance.blockchain_manager1.private_ip}"
+}
+
 resource "aws_instance" "blockchain_manager1" {
-  ami                    = "ami-31c7f654"
-  instance_type          = "r4.2xlarge"
-  key_name               = "${aws_key_pair.blockchain_deployer.id}"
-  subnet_id              = "${local.blockchain_public_subnet_id}"
-  source_dest_check      = false
-  vpc_security_group_ids = ["${aws_security_group.blockchain_app.id}"]
-  user_data              = "${file("${path.module}/userdata/manager1")}"
+  ami               = "ami-31c7f654"
+  instance_type     = "r4.2xlarge"
+  key_name          = "${local.blockchain_deployer_key_pair_id}"
+  subnet_id         = "${local.blockchain_public_subnet_id}"
+  source_dest_check = false
+
+  vpc_security_group_ids = [
+    "${aws_security_group.blockchain_app.id}",
+    "${aws_security_group.blockchain_swarm.id}",
+  ]
+
+  user_data = "${file("${path.module}/userdata/manager1")}"
 
   root_block_device {
     volume_type = "gp2"
