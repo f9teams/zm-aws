@@ -1,5 +1,5 @@
 resource "aws_security_group" "blockchain_app" {
-  name   = "blockchain_app"
+  name   = "${local.env_prefix_u}blockchain_app"
   vpc_id = "${local.blockchain_vpc_id}"
 
   ingress {
@@ -58,7 +58,7 @@ resource "aws_security_group" "blockchain_app" {
 }
 
 resource "aws_security_group" "blockchain_swarm" {
-  name   = "blockchain_swarm"
+  name   = "${local.env_prefix_u}blockchain_swarm"
   vpc_id = "${local.blockchain_vpc_id}"
 
   ingress {
@@ -85,7 +85,7 @@ resource "aws_security_group" "blockchain_swarm" {
 }
 
 resource "aws_elb" "blockchain_app" {
-  name    = "${local.environment}-blockchain-app"
+  name    = "${local.env_prefix_d}blockchain-app"
   subnets = ["${local.blockchain_public_subnet_id}"]
 
   listener {

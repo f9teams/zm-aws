@@ -49,12 +49,12 @@ resource "aws_instance" "blockchain_dev" {
 }
 
 resource "aws_iam_instance_profile" "blockchain_dev" {
-  name = "${local.environment}_blockchain_dev"
+  name = "${local.env_prefix_u}blockchain_dev"
   role = "${aws_iam_role.blockchain_dev.name}"
 }
 
 resource "aws_iam_role" "blockchain_dev" {
-  name = "${local.environment}_blockchain_dev"
+  name = "${local.env_prefix_u}blockchain_dev"
 
   assume_role_policy = <<EOF
 {
@@ -74,13 +74,13 @@ EOF
 }
 
 resource "aws_iam_policy_attachment" "blockchain_dev" {
-  name       = "${local.environment}_blockchain_dev"
+  name       = "${local.env_prefix_u}blockchain_dev"
   policy_arn = "${aws_iam_policy.blockchain_dev.arn}"
   roles      = ["${aws_iam_role.blockchain_dev.name}"]
 }
 
 resource "aws_iam_policy" "blockchain_dev" {
-  name = "${local.environment}_blockchain_dev"
+  name = "${local.env_prefix_u}blockchain_dev"
 
   policy = <<EOF
 {

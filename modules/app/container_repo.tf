@@ -1,4 +1,4 @@
 resource "aws_ecr_repository" "blockchain" {
   count = "${length(local.containers)}"
-  name  = "${local.environment}-${local.containers[count.index]}"
+  name  = "${local.env_prefix_d}${local.containers[count.index]}"
 }
