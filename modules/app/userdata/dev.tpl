@@ -6,29 +6,21 @@ ensure_dependencies()
   yum update -y
   yum install -y git docker make golang
 }
+ensure_dependencies
 
 configure_docker()
 {
-  mkdir -p /etc/docker
-  tee /etc/docker/daemon.json << EOF
-{
-  "hosts": [
-    "tcp://0.0.0.0:2375",
-    "unix:///var/run/docker.sock"
-  ]
-}
-EOF
-
-  service docker restart
   usermod -a -G docker ec2-user
 }
+configure_docker
 
-configure_home()
+configure_user()
 {
   tee -a $HOME/.bash_profile << EOF
 
 export GOPATH=\$HOME/go
 export PATH=\$GOPATH/bin:$PATH
+export DOCKER_HOST=${blockchain_manager1_private_ip}
 EOF
 
   source $HOME/.bash_profile
@@ -41,8 +33,5 @@ EOF
 }
 EOF
 }
-export -f configure_home
-
-ensure_dependencies
-configure_docker
-su ec2-user -c "configure_home"
+export -f configure_user
+su ec2-user -c configure_user

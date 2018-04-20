@@ -138,6 +138,10 @@ output "blockchain_manager1_private_ip" {
   value = "${aws_instance.blockchain_manager1.private_ip}"
 }
 
+data "template_file" "blockchain_manager1_user_data" {
+  template = "${file("${path.module}/userdata/manager1.tpl")}"
+}
+
 resource "aws_instance" "blockchain_manager1" {
   ami               = "ami-31c7f654"
   instance_type     = "r4.2xlarge"
@@ -150,7 +154,7 @@ resource "aws_instance" "blockchain_manager1" {
     "${aws_security_group.blockchain_swarm.id}",
   ]
 
-  user_data = "${file("${path.module}/userdata/manager1")}"
+  user_data = "${data.template_file.blockchain_manager1_user_data.rendered}"
 
   root_block_device {
     volume_type = "gp2"
