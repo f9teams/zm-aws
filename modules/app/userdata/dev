@@ -1,21 +1,16 @@
-#!/bin/bash
+#!/bin/bash -ex
+exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
-yum update -y
-yum install -y git docker
+ensure_dependencies()
+{
+  yum update -y
+  yum install -y git docker make golang
+}
 
-# Start and stop docker before writing daemon.json.
-# When I started docker after writing dameon.json
-# daemon.json was being deleted, I assume by first
-# start of docker
-service docker start
-service docker stop
-
-# Allow connecting to docker via ssh forwarding
-# Example:
-# ssh -i deployer_rsa -nNT -L 2375:127.0.0.1:2375 ec2-user@18.188.106.173
-# export DOCKER_HOST=tcp://localhost:2375
-# docker image ls
-tee /etc/docker/daemon.json << EOF
+configure_docker()
+{
+  mkdir -p /etc/docker
+  tee /etc/docker/daemon.json << EOF
 {
   "hosts": [
     "tcp://0.0.0.0:2375",
@@ -24,5 +19,30 @@ tee /etc/docker/daemon.json << EOF
 }
 EOF
 
-service docker restart
-usermod -a -G docker ec2-user
+  service docker restart
+  usermod -a -G docker ec2-user
+}
+
+configure_home()
+{
+  tee -a $HOME/.bash_profile << EOF
+
+export GOPATH=\$HOME/go
+export PATH=\$GOPATH/bin:$PATH
+EOF
+
+  source $HOME/.bash_profile
+  go get -v -u github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/docker-credential-ecr-login
+
+  mkdir -p $HOME/.docker
+  tee $HOME/.docker/config.json << EOF
+{
+	"credsStore": "ecr-login"
+}
+EOF
+}
+export -f configure_home
+
+ensure_dependencies
+configure_docker
+su ec2-user -c "configure_home"
