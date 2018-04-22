@@ -5,7 +5,6 @@ terraform {
     bucket               = "zm-tf-state"
     workspace_key_prefix = "env"
     key                  = "zimbrax.tfstate"
-
-    # dynamodb_table       = "terraform-lock"
+    dynamodb_table       = "tfstate-lock"
   }
 }

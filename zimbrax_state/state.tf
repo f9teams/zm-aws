@@ -12,7 +12,7 @@ resource "aws_s3_bucket" "tfstate" {
 }
 
 resource "aws_dynamodb_table" "tfstate_lock" {
-  name           = "tfstate_lock"
+  name           = "tfstate-lock"
   read_capacity  = "2"
   write_capacity = "2"
   hash_key       = "LockID"
