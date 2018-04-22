@@ -14,7 +14,7 @@ resource "aws_route53_record" "blockchain_mail" {
   zone_id = "${local.blockchain_domain_zone_id}"
   name    = "${local.env_prefix_d}bc-mail.lonni.me"
   type    = "A"
-  records = ["${aws_eip.blockchain_manager1.public_ip}"]
+  records = ["${aws_instance.blockchain_manager1.public_ip}"]
   ttl     = 3600
 }
 

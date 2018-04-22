@@ -4,9 +4,16 @@ exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 ensure_dependencies()
 {
   yum update -y
-  yum install -y git docker make golang
+  yum install -y docker amazon-efs-utils
 }
 ensure_dependencies
+
+configure_efs() {
+  mkdir -p /mnt/blockchain
+  echo "${blockchain_fs_id}:/ /mnt/blockchain efs tls,_netdev" >> /etc/fstab
+  mount -a -t efs defaults
+}
+configure_efs
 
 configure_docker()
 {

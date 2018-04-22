@@ -123,31 +123,26 @@ resource "aws_elb" "blockchain_app" {
   }
 }
 
-resource "aws_eip" "blockchain_manager1" {
-  instance = "${aws_instance.blockchain_manager1.id}"
-  vpc      = true
+data "template_file" "blockchain_manager1_user_data" {
+  template = "${file("${path.module}/userdata/manager1.tpl")}"
 
-  tags {
-    Name        = "${local.environment}_eip_blockchain_manager1"
-    Environment = "${local.environment}"
-    Project     = "blockchain"
+  vars {
+    blockchain_fs_id = "${local.blockchain_fs_id}"
   }
 }
 
-data "template_file" "blockchain_manager1_user_data" {
-  template = "${file("${path.module}/userdata/manager1.tpl")}"
-}
-
 resource "aws_instance" "blockchain_manager1" {
-  ami               = "ami-31c7f654"
-  instance_type     = "r4.2xlarge"
-  key_name          = "${local.blockchain_deployer_key_pair_id}"
-  subnet_id         = "${local.blockchain_public_subnet_id}"
-  source_dest_check = false
+  ami                         = "ami-31c7f654"
+  instance_type               = "r4.2xlarge"
+  key_name                    = "${local.blockchain_deployer_key_pair_id}"
+  subnet_id                   = "${local.blockchain_public_subnet_id}"
+  source_dest_check           = false
+  associate_public_ip_address = true
 
   vpc_security_group_ids = [
     "${aws_security_group.blockchain_app.id}",
     "${aws_security_group.blockchain_swarm.id}",
+    "${local.blockchain_fs_sg_id}",
   ]
 
   user_data = "${data.template_file.blockchain_manager1_user_data.rendered}"
