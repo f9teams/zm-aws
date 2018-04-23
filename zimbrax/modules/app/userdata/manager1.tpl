@@ -31,5 +31,10 @@ EOF
   usermod -a -G docker ec2-user
 
   docker swarm init
+  # after cloud init is done "test -f /var/lib/cloud/instance/boot-finished"
+  # until [[ -f /var/lib/cloud/instance/boot-finished ]]; do
+  #  sleep 1
+  # done
+  # "docker swarm join $${blockchain_manager1_private_ip}:2377 --token $(docker -H $${blockchain_manager1_private_ip} swarm join-token -q worker)"
 }
 configure_docker
