@@ -10,6 +10,6 @@ output "blockchain_deployer_key_pair_id" {
   value = "${aws_key_pair.blockchain_deployer.id}"
 }
 
-output "blockchain_user_key_pair_ids" {
-  value = "${aws_key_pair.blockchain_user.*.id}"
+output "blockchain_user_public_keys" {
+  value = "${aws_key_pair.blockchain_user.*.public_key}"
 }

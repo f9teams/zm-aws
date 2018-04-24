@@ -1,10 +1,5 @@
 variable "user_keys" {
   type = "list"
-
-  default = [
-    "eric",
-    "jose",
-  ]
 }
 
 locals {
