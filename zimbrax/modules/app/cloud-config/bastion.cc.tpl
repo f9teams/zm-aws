@@ -51,4 +51,4 @@ runcmd:
 
 power_state:
   mode: reboot
-  message: cloud-init complete, rebooting
+  message: "rebooting cloud-init complete"
