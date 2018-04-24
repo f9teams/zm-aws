@@ -12,7 +12,7 @@ yum_repos:
     gpgcheck: true
     gpgkey: https://download.docker.com/linux/centos/gpg
     name: Docker CE
-  centos_extras:
+  centos-extras:
     baseurl: http://mirror.centos.org/centos/7/extras/x86_64
     enabled: true
     failovermethod: priority

@@ -11,8 +11,8 @@ yum_repos:
     failovermethod: priority
     gpgcheck: true
     gpgkey: https://download.docker.com/linux/centos/gpg
-    name: Docker CE packages from Docker repo
-  centos_extras:
+    name: Docker CE
+  centos-extras:
     baseurl: http://mirror.centos.org/centos/7/extras/x86_64
     enabled: true
     failovermethod: priority
@@ -51,6 +51,7 @@ write_files:
       }
 
 runcmd:
+  - chkconfig haveged on
   - usermod -aG docker ec2-user
   - docker swarm init
 
