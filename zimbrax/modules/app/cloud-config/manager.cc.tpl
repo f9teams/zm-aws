@@ -33,16 +33,5 @@ write_files:
       }
 
 runcmd:
-  - mkdir -p /mnt/blockchain
-  - echo "${blockchain_fs_id}:/ /mnt/blockchain efs tls,_netdev 0 0" >> /etc/fstab
-  - mount -a -t efs defaults
-  - chown ec2-user /mnt/blockchain
-
   - usermod -aG docker ec2-user
-
-  - systemctl enable docker.service
-  - systemctl start docker.service
   - docker swarm init
-
-final_message: |
-  Blockchain Docker Swarm manager is initialized.

@@ -147,13 +147,24 @@ resource "aws_elb" "blockchain_app" {
   }
 }
 
-data "template_file" "blockchain_manager1_cloud_config" {
-  template = "${file("${path.module}/cloud-config/manager.tpl")}"
+data "template_file" "blockchain_manager_cc" {
+  template = "${file("${path.module}/cloud-config/manager.cc.tpl")}"
 
   vars {
-    blockchain_fs_id         = "${local.blockchain_fs_id}"
     eric_key_pair_public_key = "${local.eric_key_pair_public_key}"
   }
+}
+
+data "template_file" "blockchain_manager_mounts_sh" {
+  template = "${file("${path.module}/cloud-config/mounts.sh.tpl")}"
+
+  vars {
+    blockchain_fs_id = "${local.blockchain_fs_id}"
+  }
+}
+
+data "template_file" "blockchain_docker_daemon_sh" {
+  template = "${file("${path.module}/cloud-config/docker-daemon.sh.tpl")}"
 }
 
 data "template_cloudinit_config" "blockchain_manager1_user_data" {
@@ -161,9 +172,21 @@ data "template_cloudinit_config" "blockchain_manager1_user_data" {
   base64_encode = true
 
   part {
-    filename     = "blockchain_manager.cfg"
     content_type = "text/cloud-config"
-    content      = "${data.template_file.blockchain_manager1_cloud_config.rendered}"
+    filename     = "blockchain_manager.cc"
+    content      = "${data.template_file.blockchain_manager_cc.rendered}"
+  }
+
+  part {
+    content_type = "text/x-shellscript"
+    filename     = "00_mounts.sh"
+    content      = "${data.template_file.blockchain_manager_mounts_sh.rendered}"
+  }
+
+  part {
+    content_type = "text/x-shellscript"
+    filename     = "10_docker-daemon.sh"
+    content      = "${data.template_file.blockchain_docker_daemon_sh.rendered}"
   }
 }
 

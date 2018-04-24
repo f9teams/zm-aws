@@ -25,13 +25,27 @@ resource "aws_security_group" "blockchain_bastion" {
   }
 }
 
-data "template_file" "blockchain_bastion_cloud_config" {
-  template = "${file("${path.module}/cloud-config/bastion.tpl")}"
+data "template_file" "blockchain_bastion_cc" {
+  template = "${file("${path.module}/cloud-config/bastion.cc.tpl")}"
 
   vars {
-    blockchain_swarm_manager_ip = "${aws_eip.blockchain_manager1.public_ip}"
-    blockchain_fs_id            = "${local.blockchain_fs_id}"
-    eric_key_pair_public_key    = "${local.eric_key_pair_public_key}"
+    eric_key_pair_public_key = "${local.eric_key_pair_public_key}"
+  }
+}
+
+data "template_file" "blockchain_bastion_mounts_sh" {
+  template = "${file("${path.module}/cloud-config/mounts.sh.tpl")}"
+
+  vars {
+    blockchain_fs_id = "${local.blockchain_fs_id}"
+  }
+}
+
+data "template_file" "blockchain_docker_client_sh" {
+  template = "${file("${path.module}/cloud-config/docker-client.sh.tpl")}"
+
+  vars {
+    blockchain_swarm_manager_ip = "${aws_instance.blockchain_manager1.private_ip}"
   }
 }
 
@@ -40,9 +54,21 @@ data "template_cloudinit_config" "blockchain_bastion_user_data" {
   base64_encode = true
 
   part {
-    filename     = "blockchain_bastion.cfg"
     content_type = "text/cloud-config"
-    content      = "${data.template_file.blockchain_bastion_cloud_config.rendered}"
+    filename     = "blockchain_bastion.cc"
+    content      = "${data.template_file.blockchain_bastion_cc.rendered}"
+  }
+
+  part {
+    content_type = "text/x-shellscript"
+    filename     = "00_mounts.sh"
+    content      = "${data.template_file.blockchain_bastion_mounts_sh.rendered}"
+  }
+
+  part {
+    content_type = "text/x-shellscript"
+    filename     = "10_docker-client.sh"
+    content      = "${data.template_file.blockchain_docker_client_sh.rendered}"
   }
 }
 

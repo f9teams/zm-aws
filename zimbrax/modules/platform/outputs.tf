@@ -7,7 +7,7 @@ output "blockchain_public_subnet_id" {
 }
 
 output "blockchain_fs_id" {
-  value = "${aws_efs_file_system.blockchain.id}"
+  value = "${aws_efs_mount_target.blockchain.file_system_id}"
 }
 
 output "blockchain_fs_sg_id" {
