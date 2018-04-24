@@ -147,11 +147,34 @@ resource "aws_elb" "blockchain_app" {
   }
 }
 
-data "template_file" "blockchain_manager1_user_data" {
-  template = "${file("${path.module}/userdata/manager1.tpl")}"
+data "template_file" "blockchain_manager1_cloud_config" {
+  template = "${file("${path.module}/cloud-config/manager.tpl")}"
 
   vars {
-    blockchain_fs_id = "${local.blockchain_fs_id}"
+    blockchain_fs_id         = "${local.blockchain_fs_id}"
+    eric_key_pair_public_key = "${local.eric_key_pair_public_key}"
+  }
+}
+
+data "template_cloudinit_config" "blockchain_manager1_user_data" {
+  gzip          = true
+  base64_encode = true
+
+  part {
+    filename     = "blockchain_manager.cfg"
+    content_type = "text/cloud-config"
+    content      = "${data.template_file.blockchain_manager1_cloud_config.rendered}"
+  }
+}
+
+resource "aws_eip" "blockchain_manager1" {
+  instance = "${aws_instance.blockchain_manager1.id}"
+  vpc      = true
+
+  tags {
+    Name        = "${local.environment}_ip_blockchain_manager1"
+    Environment = "${local.environment}"
+    Project     = "blockchain"
   }
 }
 
@@ -169,7 +192,7 @@ resource "aws_instance" "blockchain_manager1" {
     "${local.blockchain_fs_sg_id}",
   ]
 
-  user_data = "${data.template_file.blockchain_manager1_user_data.rendered}"
+  user_data = "${data.template_cloudinit_config.blockchain_manager1_user_data.rendered}"
 
   root_block_device {
     volume_type = "gp2"

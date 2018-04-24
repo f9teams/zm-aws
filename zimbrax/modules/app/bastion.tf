@@ -17,14 +17,32 @@ resource "aws_security_group" "blockchain_bastion" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
+
+  tags {
+    Name        = "${local.environment}_sg_blockchain_bastion"
+    Environment = "${local.environment}"
+    Project     = "blockchain"
+  }
 }
 
-data "template_file" "blockchain_bastion_user_data" {
-  template = "${file("${path.module}/userdata/bastion.tpl")}"
+data "template_file" "blockchain_bastion_cloud_config" {
+  template = "${file("${path.module}/cloud-config/bastion.tpl")}"
 
   vars {
-    blockchain_manager1_private_ip = "${aws_instance.blockchain_manager1.private_ip}"
-    blockchain_fs_id               = "${local.blockchain_fs_id}"
+    blockchain_swarm_manager_ip = "${aws_eip.blockchain_manager1.public_ip}"
+    blockchain_fs_id            = "${local.blockchain_fs_id}"
+    eric_key_pair_public_key    = "${local.eric_key_pair_public_key}"
+  }
+}
+
+data "template_cloudinit_config" "blockchain_bastion_user_data" {
+  gzip          = true
+  base64_encode = true
+
+  part {
+    filename     = "blockchain_bastion.cfg"
+    content_type = "text/cloud-config"
+    content      = "${data.template_file.blockchain_bastion_cloud_config.rendered}"
   }
 }
 
@@ -43,7 +61,7 @@ resource "aws_instance" "blockchain_bastion" {
   ]
 
   iam_instance_profile = "${aws_iam_instance_profile.blockchain_bastion.name}"
-  user_data            = "${data.template_file.blockchain_bastion_user_data.rendered}"
+  user_data            = "${data.template_cloudinit_config.blockchain_bastion_user_data.rendered}"
 
   root_block_device {
     volume_type = "gp2"
