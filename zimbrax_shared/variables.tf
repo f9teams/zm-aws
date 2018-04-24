@@ -3,6 +3,7 @@ variable "user_keys" {
 
   default = [
     "eric",
+    "jose",
   ]
 }
 
