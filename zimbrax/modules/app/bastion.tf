@@ -29,7 +29,7 @@ data "template_file" "blockchain_bastion_cc" {
   template = "${file("${path.module}/cloud-config/bastion.cc.tpl")}"
 
   vars {
-    eric_key_pair_public_key = "${local.eric_key_pair_public_key}"
+    ssh_authorized_keys = "ssh_authorized_keys: ${jsonencode(local.blockchain_user_public_keys)}"
   }
 }
 

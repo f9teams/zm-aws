@@ -151,7 +151,7 @@ data "template_file" "blockchain_manager_cc" {
   template = "${file("${path.module}/cloud-config/manager.cc.tpl")}"
 
   vars {
-    eric_key_pair_public_key = "${local.eric_key_pair_public_key}"
+    ssh_authorized_keys = "ssh_authorized_keys: ${jsonencode(local.blockchain_user_public_keys)}"
   }
 }
 

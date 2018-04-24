@@ -2,8 +2,7 @@
 output:
   all: '| tee -a /var/log/cloud-init-output.log'
 
-ssh_authorized_keys:
-  - "${eric_key_pair_public_key}"
+${ssh_authorized_keys}
 
 yum_repos:
   docker:

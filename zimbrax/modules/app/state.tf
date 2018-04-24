@@ -1,4 +1,4 @@
-data "terraform_remote_state" "common" {
+data "terraform_remote_state" "shared" {
   backend = "s3"
 
   config {
@@ -10,9 +10,8 @@ data "terraform_remote_state" "common" {
 }
 
 locals {
-  blockchain_app_certificate_id   = "${data.terraform_remote_state.common.blockchain_app_certificate_id}"
-  blockchain_domain_zone_id       = "${data.terraform_remote_state.common.blockchain_domain_zone_id}"
-  blockchain_deployer_key_pair_id = "${data.terraform_remote_state.common.blockchain_deployer_key_pair_id}"
-  eric_key_pair_id                = "${data.terraform_remote_state.common.eric_key_pair_id}"
-  eric_key_pair_public_key        = "${data.terraform_remote_state.common.eric_key_pair_public_key}"
+  blockchain_app_certificate_id   = "${data.terraform_remote_state.shared.blockchain_app_certificate_id}"
+  blockchain_domain_zone_id       = "${data.terraform_remote_state.shared.blockchain_domain_zone_id}"
+  blockchain_deployer_key_pair_id = "${data.terraform_remote_state.shared.blockchain_deployer_key_pair_id}"
+  blockchain_user_public_keys     = "${data.terraform_remote_state.shared.blockchain_user_public_keys}"
 }
