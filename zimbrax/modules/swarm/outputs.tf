@@ -1,3 +1,7 @@
+output "dockerhost_private_ip" {
+  value = "${aws_instance.manager1.private_ip}"
+}
+
 output "dockerhost_fqdn" {
   value = "${aws_route53_record.dockerhost.fqdn}"
 }

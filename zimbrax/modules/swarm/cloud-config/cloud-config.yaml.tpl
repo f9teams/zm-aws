@@ -51,7 +51,7 @@ write_files:
       }
 
 runcmd:
-  - chkconfig haveged on
+  - systemctl enable haveged.service
   - usermod -aG docker ec2-user
   - docker swarm init
 
