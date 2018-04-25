@@ -1,6 +1,5 @@
 resource "aws_eip" "bastion" {
-  instance = "${aws_instance.bastion.id}"
-  vpc      = true
+  vpc = true
 
   tags {
     Name        = "${local.environment}_ip_bastion"
@@ -15,4 +14,9 @@ resource "aws_route53_record" "bastion" {
   type    = "A"
   records = ["${aws_eip.bastion.public_ip}"]
   ttl     = 3600
+}
+
+resource "aws_eip_association" "bastion_eip" {
+  instance_id   = "${aws_instance.bastion.id}"
+  allocation_id = "${aws_eip.bastion.id}"
 }
