@@ -1,36 +1,39 @@
+variable "vpc_id" {
+  type = "string"
+}
+
+variable "r53_zone_id" {
+  type = "string"
+}
+
+variable "public_subnet_ids" {
+  type = "list"
+}
+
+variable "app_certificate_id" {
+  type = "string"
+}
+
+variable "app_instance_ids" {
+  type = "list"
+}
+
+variable "swarm_security_group_id" {
+  type = "string"
+}
+
 locals {
   environment  = "${terraform.workspace}"
   env_prefix_d = "${terraform.workspace == "prod" ? "" : "${terraform.workspace}-"}"
   env_prefix_u = "${terraform.workspace == "prod" ? "" : "${terraform.workspace}_"}"
-}
 
-variable "blockchain_vpc_id" {
-  type = "string"
-}
+  vpc_id = "${var.vpc_id}"
 
-variable "blockchain_public_subnet_id" {
-  type = "string"
-}
+  r53_zone_id = "${var.r53_zone_id}"
 
-variable "blockchain_fs_sg_id" {
-  type = "string"
-}
+  public_subnet_ids  = "${var.public_subnet_ids}"
+  app_certificate_id = "${var.app_certificate_id}"
+  app_instance_ids   = "${var.app_instance_ids}"
 
-variable "blockchain_fs_id" {
-  type = "string"
-}
-
-locals {
-  blockchain_vpc_id           = "${var.blockchain_vpc_id}"
-  blockchain_public_subnet_id = "${var.blockchain_public_subnet_id}"
-  blockchain_fs_sg_id         = "${var.blockchain_fs_sg_id}"
-  blockchain_fs_id            = "${var.blockchain_fs_id}"
-}
-
-variable "containers" {
-  type = "list"
-}
-
-locals {
-  containers = "${var.containers}"
+  swarm_security_group_id = "${var.swarm_security_group_id}"
 }

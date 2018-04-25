@@ -7,7 +7,7 @@ configure_profile() {
 
 export GOPATH=\$HOME/go
 export PATH=\$GOPATH/bin:$PATH
-export DOCKER_HOST=tcp://${blockchain_swarm_manager_ip}:2375
+export DOCKER_HOST=tcp://${swarm_dockerhost_fqdn}:2375
 EOF
 
   source $HOME/.bash_profile

@@ -1,7 +1,7 @@
-output "blockchain_bastion_public_ip" {
-  value = "${module.app.blockchain_bastion_public_ip}"
+output "bastion_fqdn" {
+  value = "${module.bastion.fqdn}"
 }
 
-output "blockchain_manager1_private_ip" {
-  value = "${module.app.blockchain_manager1_private_ip}"
+output "dockerhost_fgdn" {
+  value = "${module.swarm.dockerhost_fqdn}"
 }
