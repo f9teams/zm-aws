@@ -13,7 +13,7 @@ resource "aws_route53_record" "dockerhost" {
   name    = "${local.env_prefix_d}dockerhost.lonni.me"
   type    = "A"
   records = ["${aws_eip.manager1.private_ip}"]
-  ttl     = 3600
+  ttl     = 60
 }
 
 resource "aws_eip_association" "bastion_eip" {

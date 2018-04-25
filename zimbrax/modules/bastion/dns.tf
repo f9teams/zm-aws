@@ -13,7 +13,7 @@ resource "aws_route53_record" "bastion" {
   name    = "${local.env_prefix_d}bastion.lonni.me"
   type    = "A"
   records = ["${aws_eip.bastion.public_ip}"]
-  ttl     = 3600
+  ttl     = 60
 }
 
 resource "aws_eip_association" "bastion_eip" {
