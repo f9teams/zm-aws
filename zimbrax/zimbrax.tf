@@ -46,8 +46,8 @@ module "bastion" {
   }
 
   swarm {
-    dockerhost_fqdn   = "${module.swarm.dockerhost_fqdn}"
-    security_group_id = "${module.swarm.security_group_id}"
+    dockerhost_private_ip = "${module.swarm.dockerhost_private_ip}"
+    security_group_id     = "${module.swarm.security_group_id}"
   }
 }
 

@@ -42,6 +42,6 @@ locals {
   file_system_id                = "${lookup(var.file_system, "id")}"
   file_system_security_group_id = "${lookup(var.file_system, "security_group_id")}"
 
-  swarm_dockerhost_fqdn   = "${lookup(var.swarm, "dockerhost_fqdn")}"
-  swarm_security_group_id = "${lookup(var.swarm, "security_group_id")}"
+  swarm_dockerhost_private_ip = "${lookup(var.swarm, "dockerhost_private_ip")}"
+  swarm_security_group_id     = "${lookup(var.swarm, "security_group_id")}"
 }

@@ -19,6 +19,16 @@ resource "aws_security_group_rule" "swarm_ingress_docker_from_self" {
   description       = "2375 unsecure Docker socket. 2376 for tls secure Docker socket. Required for Docker Machine. 2377 for communication between the nodes of a Docker Swarm, only needed on manager nodes."
 }
 
+resource "aws_security_group_rule" "swarm_ingress_udp_docker_overlay_networking_from_self" {
+  type              = "ingress"
+  from_port         = 4789
+  to_port           = 4789
+  protocol          = "udp"
+  self              = true
+  security_group_id = "${aws_security_group.swarm.id}"
+  description       = "UDP 4789 for overlay network traffic (container ingress networking)"
+}
+
 resource "aws_security_group_rule" "swarm_ingress_tcp_docker_network_discovery_from_self" {
   type              = "ingress"
   from_port         = 7946
@@ -37,16 +47,6 @@ resource "aws_security_group_rule" "swarm_ingress_udp_docker_network_discovery_f
   self              = true
   security_group_id = "${aws_security_group.swarm.id}"
   description       = "UDP 7946 for communication among nodes (container network discovery)"
-}
-
-resource "aws_security_group_rule" "swarm_ingress_udp_docker_overlay_networking_from_self" {
-  type              = "ingress"
-  from_port         = 4789
-  to_port           = 4789
-  protocol          = "udp"
-  self              = true
-  security_group_id = "${aws_security_group.swarm.id}"
-  description       = "UDP 4789 for overlay network traffic (container ingress networking)"
 }
 
 resource "aws_security_group_rule" "swarm_egress_to_all" {

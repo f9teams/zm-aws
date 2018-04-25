@@ -18,7 +18,7 @@ data "template_file" "docker_client_sh" {
   template = "${file("${path.module}/cloud-config/docker-client.sh.tpl")}"
 
   vars {
-    swarm_dockerhost_fqdn = "${local.swarm_dockerhost_fqdn}"
+    swarm_dockerhost_private_ip = "${local.swarm_dockerhost_private_ip}"
   }
 }
 
