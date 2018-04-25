@@ -2,22 +2,6 @@ resource "aws_security_group" "bastion" {
   name   = "${local.env_prefix_u}bastion"
   vpc_id = "${local.vpc_id}"
 
-  ingress {
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
   tags {
     Name        = "${local.environment}_sg_bastion"
     Environment = "${local.environment}"
@@ -25,7 +9,29 @@ resource "aws_security_group" "bastion" {
   }
 }
 
-resource "aws_security_group_rule" "ssh_swarm" {
+resource "aws_security_group_rule" "bastion_ingress_ssh_from_all" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  ipv6_cidr_blocks  = ["::/0"]
+  security_group_id = "${aws_security_group.bastion.id}"
+  description       = "ssh"
+}
+
+resource "aws_security_group_rule" "bastion_egress_to_all" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  ipv6_cidr_blocks  = ["::/0"]
+  security_group_id = "${aws_security_group.bastion.id}"
+  description       = "ALL"
+}
+
+resource "aws_security_group_rule" "swarm_ingress_ssh_from_bastion" {
   type                     = "ingress"
   from_port                = 22
   to_port                  = 22

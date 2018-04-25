@@ -1,4 +1,4 @@
-resource "aws_security_group_rule" "account_api" {
+resource "aws_security_group_rule" "app_ingress_accountapi_from_all" {
   type              = "ingress"
   from_port         = 8443
   to_port           = 8443
@@ -9,7 +9,7 @@ resource "aws_security_group_rule" "account_api" {
   description       = "HTTPS, Account Provisioning API"
 }
 
-resource "aws_security_group_rule" "web_ui" {
+resource "aws_security_group_rule" "app_ingress_https_from_all" {
   type              = "ingress"
   from_port         = 443
   to_port           = 443
