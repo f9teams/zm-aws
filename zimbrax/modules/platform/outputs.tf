@@ -7,6 +7,9 @@ output "public_subnet_ids" {
 }
 
 output "file_system_id" {
+  # use file_system_id from aws_efs_mount_target instead of id from aws_efs_file_system
+  # because we don't want downstream instances to be manufatured until the mount target
+  # exists, efs mount targets are slow to create
   value = "${aws_efs_mount_target.blockchain.file_system_id}"
 }
 
