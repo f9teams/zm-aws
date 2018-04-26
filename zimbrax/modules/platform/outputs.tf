@@ -3,18 +3,22 @@ output "vpc_id" {
 }
 
 output "public_subnet_ids" {
-  value = ["${aws_subnet.public.id}"]
+  value = ["${values(module.public_subnets.availability_zone_to_public_subnet_id)}"]
+}
+
+output "private_subnet_ids" {
+  value = ["${values(module.private_subnets.availability_zone_to_private_subnet_id)}"]
 }
 
 output "file_system_id" {
   # use file_system_id from aws_efs_mount_target instead of id from aws_efs_file_system
   # because we don't want downstream instances to be manufatured until the mount target
   # exists, efs mount targets are slow to create
-  value = "${aws_efs_mount_target.blockchain.file_system_id}"
+  value = "${aws_efs_file_system.network_file_system.id}"
 }
 
 output "file_system_security_group_id" {
-  value = "${aws_security_group.fs.id}"
+  value = "${aws_security_group.network_file_system.id}"
 }
 
 output "docker_repositories" {
