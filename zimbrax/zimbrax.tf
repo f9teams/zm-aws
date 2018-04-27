@@ -19,44 +19,34 @@ module "platform" {
 # module "swarm" {
 #   source = "./modules/swarm"
 
-
 #   user_public_keys     = "${local.user_public_keys}"
 #   deployer_key_pair_id = "${local.deployer_key_pair_id}"
 #   r53_zone_id          = "${local.r53_zone_id}"
 #   vpc_id               = "${module.platform.vpc_id}"
 #   public_subnet_ids    = "${module.platform.public_subnet_ids}"
 
-
 #   file_system {
 #     id                = "${module.platform.file_system_id}"
 #     security_group_id = "${module.platform.file_system_security_group_id}"
 #   }
 # }
 
+module "bastion" {
+  source = "./modules/bastion"
 
-# module "bastion" {
-#   source = "./modules/bastion"
+  user_public_keys     = "${local.user_public_keys}"
+  deployer_key_pair_id = "${local.deployer_key_pair_id}"
+  r53_zone_id          = "${local.r53_zone_id}"
+  vpc_id               = "${module.platform.vpc_id}"
+  public_subnet_id     = "${module.platform.public_subnet_ids[0]}"
 
+  file_system_id                = "${module.platform.file_system_id}"
+  file_system_security_group_id = "${module.platform.file_system_security_group_id}"
 
-#   user_public_keys     = "${local.user_public_keys}"
-#   deployer_key_pair_id = "${local.deployer_key_pair_id}"
-#   r53_zone_id          = "${local.r53_zone_id}"
-#   vpc_id               = "${module.platform.vpc_id}"
-#   public_subnet_id     = "${module.platform.public_subnet_ids[0]}"
+  # swarm_security_group_id = "${module.swarm.security_group_id}"
 
-
-#   file_system {
-#     id                = "${module.platform.file_system_id}"
-#     security_group_id = "${module.platform.file_system_security_group_id}"
-#   }
-
-
-#   swarm {
-#     dockerhost_private_ip = "${module.swarm.dockerhost_private_ip}"
-#     security_group_id     = "${module.swarm.security_group_id}"
-#   }
-# }
-
+  cache_security_group_id = "${module.platform.cache_security_group_id}"
+}
 
 # module "app" {
 #   source = "./modules/app"

@@ -18,4 +18,7 @@ locals {
 
   availability_zones      = "${data.aws_availability_zones.available.names}"
   availability_zone_count = "${length(data.aws_availability_zones.available.names)}"
+
+  private_subnet_ids = "${values(module.private_subnets.availability_zone_to_private_subnet_id)}"
+  public_subnet_ids  = "${values(module.public_subnets.availability_zone_to_public_subnet_id)}"
 }

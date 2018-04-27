@@ -18,13 +18,21 @@ variable "r53_zone_id" {
   type = "string"
 }
 
-variable "file_system" {
-  type = "map"
+variable "file_system_id" {
+  type = "string"
 }
 
-variable "swarm" {
-  type = "map"
+variable "file_system_security_group_id" {
+  type = "string"
 }
+
+variable "cache_security_group_id" {
+  type = "string"
+}
+
+# variable "swarm_security_group_id" {
+#   type = "string"
+# }
 
 locals {
   environment  = "${terraform.workspace}"
@@ -39,9 +47,10 @@ locals {
 
   r53_zone_id = "${var.r53_zone_id}"
 
-  file_system_id                = "${lookup(var.file_system, "id")}"
-  file_system_security_group_id = "${lookup(var.file_system, "security_group_id")}"
+  file_system_id                = "${var.file_system_id}"
+  file_system_security_group_id = "${var.file_system_security_group_id}"
 
-  swarm_dockerhost_private_ip = "${lookup(var.swarm, "dockerhost_private_ip")}"
-  swarm_security_group_id     = "${lookup(var.swarm, "security_group_id")}"
+  cache_security_group_id = "${var.cache_security_group_id}"
+
+  # swarm_security_group_id = "${var.swarm_security_group_id}"
 }

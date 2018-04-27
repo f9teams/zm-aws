@@ -3,11 +3,11 @@ output "vpc_id" {
 }
 
 output "public_subnet_ids" {
-  value = ["${values(module.public_subnets.availability_zone_to_public_subnet_id)}"]
+  value = ["${local.public_subnet_ids}"]
 }
 
 output "private_subnet_ids" {
-  value = ["${values(module.private_subnets.availability_zone_to_private_subnet_id)}"]
+  value = ["${local.private_subnet_ids}"]
 }
 
 output "file_system_id" {
@@ -21,6 +21,14 @@ output "file_system_security_group_id" {
   value = "${aws_security_group.network_file_system.id}"
 }
 
+output "cache_security_group_id" {
+  value = "${aws_security_group.cache.id}"
+}
+
 output "docker_repositories" {
   value = "${zipmap(local.containers, aws_ecr_repository.blockchain.*.repository_url)}"
+}
+
+output "cache_fqdn" {
+  value = "${aws_route53_record.cache.fqdn}"
 }

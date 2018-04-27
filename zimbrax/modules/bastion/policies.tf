@@ -31,14 +31,24 @@ resource "aws_security_group_rule" "bastion_egress_to_all" {
   description       = "ALL"
 }
 
-resource "aws_security_group_rule" "swarm_ingress_ssh_from_bastion" {
+# resource "aws_security_group_rule" "swarm_ingress_ssh_from_bastion" {
+#   type                     = "ingress"
+#   from_port                = 22
+#   to_port                  = 22
+#   protocol                 = "tcp"
+#   source_security_group_id = "${aws_security_group.bastion.id}"
+#   security_group_id        = "${local.swarm_security_group_id}"
+#   description              = "ssh from bastion to swarm"
+# }
+
+resource "aws_security_group_rule" "cache_ingress_redis_from_bastion" {
   type                     = "ingress"
-  from_port                = 22
-  to_port                  = 22
+  from_port                = "6379"
+  to_port                  = "6379"
   protocol                 = "tcp"
   source_security_group_id = "${aws_security_group.bastion.id}"
-  security_group_id        = "${local.swarm_security_group_id}"
-  description              = "ssh from bastion to swarm"
+  security_group_id        = "${local.cache_security_group_id}"
+  description              = "redis from bastion to cache"
 }
 
 resource "aws_iam_instance_profile" "bastion" {

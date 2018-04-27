@@ -3,6 +3,8 @@ data "template_file" "cloud_config" {
 
   vars {
     ssh_authorized_keys = "ssh_authorized_keys: ${jsonencode(local.user_public_keys)}"
+    environment         = "${local.environment}"
+    project             = "blockchain"
   }
 }
 
@@ -17,9 +19,11 @@ data "template_file" "mounts_sh" {
 data "template_file" "docker_client_sh" {
   template = "${file("${path.module}/cloud-config/docker-client.sh.tpl")}"
 
-  vars {
-    swarm_dockerhost_private_ip = "${local.swarm_dockerhost_private_ip}"
-  }
+  vars {}
+}
+
+data "template_file" "manager1_docker_daemon_sh" {
+  template = "${file("${path.module}/cloud-config/docker-daemon.sh.tpl")}"
 }
 
 data "template_cloudinit_config" "user_data" {
@@ -40,7 +44,13 @@ data "template_cloudinit_config" "user_data" {
 
   part {
     content_type = "text/x-shellscript"
-    filename     = "10_docker-client.sh"
+    filename     = "10_docker-daemon.sh"
+    content      = "${data.template_file.manager1_docker_daemon_sh.rendered}"
+  }
+
+  part {
+    content_type = "text/x-shellscript"
+    filename     = "20_docker-client.sh"
     content      = "${data.template_file.docker_client_sh.rendered}"
   }
 }
