@@ -5,6 +5,7 @@ pip install docker-compose
 configure_profile() {
   tee -a $HOME/.bash_profile << EOF
 
+# cloud-init docker-client.sh
 export GOPATH=\$HOME/go
 export PATH=\$GOPATH/bin:$PATH
 EOF

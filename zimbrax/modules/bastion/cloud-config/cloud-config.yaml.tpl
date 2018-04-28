@@ -32,23 +32,6 @@ write_files:
     content: |
       SELINUX=enforcing
       SELINUXTYPE=targeted
-  - path: /etc/update-motd.d/30-banner
-    permissions: "0755"
-    content: |
-      #!/bin/sh
-      cat << EOF
-
-      ███████╗██╗███╗   ███╗██████╗ ██████╗  █████╗
-      ╚══███╔╝██║████╗ ████║██╔══██╗██╔══██╗██╔══██╗
-        ███╔╝ ██║██╔████╔██║██████╔╝██████╔╝███████║
-       ███╔╝  ██║██║╚██╔╝██║██╔══██╗██╔══██╗██╔══██║
-      ███████╗██║██║ ╚═╝ ██║██████╔╝██║  ██║██║  ██║
-      ╚══════╝╚═╝╚═╝     ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-
-      Project:     ${project}
-      Environment: ${environment}
-
-      EOF
 
 repo_update: true
 repo_upgrade: all

@@ -1,4 +1,4 @@
-data "template_file" "manager1_cloud_config" {
+data "template_file" "cloud_config" {
   template = "${file("${path.module}/cloud-config/cloud-config.yaml.tpl")}"
 
   vars {
@@ -6,7 +6,16 @@ data "template_file" "manager1_cloud_config" {
   }
 }
 
-data "template_file" "manager1_mounts_sh" {
+data "template_file" "motd_sh" {
+  template = "${file("${path.module}/cloud-config/motd.sh.tpl")}"
+
+  vars {
+    environment = "${local.environment}"
+    project     = "blockchain"
+  }
+}
+
+data "template_file" "mounts_sh" {
   template = "${file("${path.module}/cloud-config/mounts.sh.tpl")}"
 
   vars {
@@ -14,29 +23,50 @@ data "template_file" "manager1_mounts_sh" {
   }
 }
 
-data "template_file" "manager1_docker_daemon_sh" {
+data "template_file" "docker_daemon_sh" {
   template = "${file("${path.module}/cloud-config/docker-daemon.sh.tpl")}"
 }
 
-data "template_cloudinit_config" "manager1_user_data" {
+data "template_file" "prompt_sh" {
+  template = "${file("${path.module}/cloud-config/prompt.sh.tpl")}"
+
+  vars {
+    environment = "${local.environment}"
+    project     = "blockchain"
+  }
+}
+
+data "template_cloudinit_config" "user_data" {
   gzip          = true
   base64_encode = true
 
   part {
     content_type = "text/cloud-config"
     filename     = "cloud-config.yaml"
-    content      = "${data.template_file.manager1_cloud_config.rendered}"
+    content      = "${data.template_file.cloud_config.rendered}"
   }
 
   part {
     content_type = "text/x-shellscript"
     filename     = "00_mounts.sh"
-    content      = "${data.template_file.manager1_mounts_sh.rendered}"
+    content      = "${data.template_file.mounts_sh.rendered}"
   }
 
   part {
     content_type = "text/x-shellscript"
     filename     = "10_docker-daemon.sh"
-    content      = "${data.template_file.manager1_docker_daemon_sh.rendered}"
+    content      = "${data.template_file.docker_daemon_sh.rendered}"
+  }
+
+  part {
+    content_type = "text/x-shellscript"
+    filename     = "20_motd.sh"
+    content      = "${data.template_file.motd_sh.rendered}"
+  }
+
+  part {
+    content_type = "text/x-shellscript"
+    filename     = "30_prompt.sh"
+    content      = "${data.template_file.prompt_sh.rendered}"
   }
 }
