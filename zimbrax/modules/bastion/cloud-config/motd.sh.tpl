@@ -4,23 +4,20 @@ cat << EOF > /etc/update-motd.d/30-banner
 #! /bin/sh
 export TERM=xterm-256color
 
-ENVIRONMENT=${environment}
-PROJECT=${project}
-NORMAL="\033[0m"
-RED="\033[0;31m"
-[ \$$ENVIRONMENT == "prod" ] && COLOR=\$$RED || COLOR=\$$NORMAL
+# these environment variables do not seem to be present when update-motd is called
+source /etc/profile.d/tfenv.sh
 
-echo -e "\$${COLOR}"
+echo -e "\$${TERM_COLOR}"
 echo -e "███████╗██╗███╗   ███╗██████╗ ██████╗  █████╗"
 echo -e "╚══███╔╝██║████╗ ████║██╔══██╗██╔══██╗██╔══██╗"
 echo -e "  ███╔╝ ██║██╔████╔██║██████╔╝██████╔╝███████║"
 echo -e " ███╔╝  ██║██║╚██╔╝██║██╔══██╗██╔══██╗██╔══██║"
 echo -e "███████╗██║██║ ╚═╝ ██║██████╔╝██║  ██║██║  ██║"
 echo -e "╚══════╝╚═╝╚═╝     ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝"
-echo -e "\$${NORMAL}"
-echo -e "Role:\t\tBASTION"
-echo -e "Project:\t\$${PROJECT^^}"
-echo -e "Environment:\t\$${ENVIRONMENT^^}"
+echo -e "\$${TERM_NORMAL}"
+echo -e "Role:\t\t\$${TF_ROLE^^}"
+echo -e "Project:\t\$${TF_PROJECT^^}"
+echo -e "Environment:\t\$${TF_ENV^^}"
 echo
 EOF
 

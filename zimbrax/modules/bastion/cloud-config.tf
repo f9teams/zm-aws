@@ -3,6 +3,9 @@ data "template_file" "cloud_config" {
 
   vars {
     ssh_authorized_keys = "ssh_authorized_keys: ${jsonencode(local.user_public_keys)}"
+    environment         = "${local.environment}"
+    project             = "blockchain"
+    role                = "bastion"
   }
 }
 
@@ -27,19 +30,7 @@ data "template_file" "docker_client_sh" {
 data "template_file" "motd_sh" {
   template = "${file("${path.module}/cloud-config/motd.sh.tpl")}"
 
-  vars {
-    environment = "${local.environment}"
-    project     = "blockchain"
-  }
-}
-
-data "template_file" "prompt_sh" {
-  template = "${file("${path.module}/cloud-config/prompt.sh.tpl")}"
-
-  vars {
-    environment = "${local.environment}"
-    project     = "blockchain"
-  }
+  vars {}
 }
 
 data "template_cloudinit_config" "user_data" {
@@ -74,11 +65,5 @@ data "template_cloudinit_config" "user_data" {
     content_type = "text/x-shellscript"
     filename     = "30_motd.sh"
     content      = "${data.template_file.motd_sh.rendered}"
-  }
-
-  part {
-    content_type = "text/x-shellscript"
-    filename     = "40_prompt.sh"
-    content      = "${data.template_file.prompt_sh.rendered}"
   }
 }
