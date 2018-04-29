@@ -6,6 +6,10 @@ variable "containers" {
   type = "list"
 }
 
+variable "db_password" {
+  type = "string"
+}
+
 data "aws_availability_zones" "available" {}
 
 locals {
@@ -21,4 +25,6 @@ locals {
 
   private_subnet_ids = "${values(module.private_subnets.availability_zone_to_private_subnet_id)}"
   public_subnet_ids  = "${values(module.public_subnets.availability_zone_to_public_subnet_id)}"
+
+  db_password = "${var.db_password}"
 }

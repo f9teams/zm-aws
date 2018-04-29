@@ -30,6 +30,14 @@ variable "cache_security_group_id" {
   type = "string"
 }
 
+variable "db_security_group_id" {
+  type = "string"
+}
+
+variable "db_fqdn" {
+  type = "string"
+}
+
 # variable "swarm_security_group_id" {
 #   type = "string"
 # }
@@ -51,6 +59,9 @@ locals {
   file_system_security_group_id = "${var.file_system_security_group_id}"
 
   cache_security_group_id = "${var.cache_security_group_id}"
+
+  db_security_group_id = "${var.db_security_group_id}"
+  db_fqdn              = "${var.db_fqdn}"
 
   # swarm_security_group_id = "${var.swarm_security_group_id}"
 }

@@ -13,3 +13,7 @@ output "docker_repositories" {
 output "cache_fqdn" {
   value = "${module.platform.cache_fqdn}"
 }
+
+output "db_fqdn" {
+  value = "${module.platform.db_fqdn}"
+}

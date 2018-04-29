@@ -1,9 +1,5 @@
-locals {
-  cache_id = "${local.env_prefix_d}cache"
-}
-
 resource "aws_elasticache_replication_group" "cache" {
-  replication_group_id          = "${local.cache_id}"
+  replication_group_id          = "${local.env_prefix_d}cache"
   replication_group_description = "Managed by Terraform"
   engine                        = "redis"
   engine_version                = "3.2.10"

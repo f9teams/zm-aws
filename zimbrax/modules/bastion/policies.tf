@@ -51,6 +51,16 @@ resource "aws_security_group_rule" "cache_ingress_redis_from_bastion" {
   description              = "redis from bastion to cache"
 }
 
+resource "aws_security_group_rule" "db_ingress_mariadb_from_bastion" {
+  type                     = "ingress"
+  from_port                = "3306"
+  to_port                  = "3306"
+  protocol                 = "tcp"
+  source_security_group_id = "${aws_security_group.bastion.id}"
+  security_group_id        = "${local.db_security_group_id}"
+  description              = "mariadb from bastion to db"
+}
+
 resource "aws_iam_instance_profile" "bastion" {
   name = "${local.env_prefix_u}bastion"
   role = "${aws_iam_role.bastion.name}"

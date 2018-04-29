@@ -55,6 +55,7 @@ packages:
   - python-pip
   - golang
   - make
+  - mariadb
 
 runcmd:
   - systemctl enable haveged.service

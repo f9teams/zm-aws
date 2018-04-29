@@ -9,6 +9,7 @@ resource "aws_instance" "bastion" {
   vpc_security_group_ids = [
     "${aws_security_group.bastion.id}",
     "${local.cache_security_group_id}",
+    "${local.db_security_group_id}",
     "${local.file_system_security_group_id}",
   ]
 

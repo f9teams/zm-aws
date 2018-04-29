@@ -27,6 +27,14 @@ data "template_file" "docker_client_sh" {
   vars {}
 }
 
+data "template_file" "mysql_client_sh" {
+  template = "${file("${path.module}/cloud-config/mysql-client.sh.tpl")}"
+
+  vars {
+    db_fqdn = "${local.db_fqdn}"
+  }
+}
+
 data "template_file" "motd_sh" {
   template = "${file("${path.module}/cloud-config/motd.sh.tpl")}"
 
@@ -63,7 +71,13 @@ data "template_cloudinit_config" "user_data" {
 
   part {
     content_type = "text/x-shellscript"
-    filename     = "30_motd.sh"
+    filename     = "30_mysql-client.sh"
+    content      = "${data.template_file.mysql_client_sh.rendered}"
+  }
+
+  part {
+    content_type = "text/x-shellscript"
+    filename     = "40_motd.sh"
     content      = "${data.template_file.motd_sh.rendered}"
   }
 }

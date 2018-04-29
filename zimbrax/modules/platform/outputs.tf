@@ -25,10 +25,18 @@ output "cache_security_group_id" {
   value = "${aws_security_group.cache.id}"
 }
 
+output "db_security_group_id" {
+  value = "${aws_security_group.db.id}"
+}
+
 output "docker_repositories" {
   value = "${zipmap(local.containers, aws_ecr_repository.blockchain.*.repository_url)}"
 }
 
 output "cache_fqdn" {
   value = "${aws_route53_record.cache.fqdn}"
+}
+
+output "db_fqdn" {
+  value = "${aws_route53_record.db.fqdn}"
 }

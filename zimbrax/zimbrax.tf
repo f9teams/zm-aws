@@ -2,6 +2,7 @@ module "platform" {
   source = "./modules/platform"
 
   r53_zone_id = "${local.r53_zone_id}"
+  db_password = "${local.db_password}"
 
   containers = [
     "redis",
@@ -43,9 +44,12 @@ module "bastion" {
   file_system_id                = "${module.platform.file_system_id}"
   file_system_security_group_id = "${module.platform.file_system_security_group_id}"
 
-  # swarm_security_group_id = "${module.swarm.security_group_id}"
-
   cache_security_group_id = "${module.platform.cache_security_group_id}"
+
+  db_security_group_id = "${module.platform.db_security_group_id}"
+  db_fqdn              = "${module.platform.db_fqdn}"
+
+  # swarm_security_group_id = "${module.swarm.security_group_id}"
 }
 
 # module "app" {
