@@ -42,7 +42,7 @@ write_files:
       export TERM_NORMAL="\033[0m"
       export TERM_RED="\033[0;31m"
       [ $$TF_ENV == "prod" ] && export TERM_COLOR=$$TERM_RED || export TERM_COLOR=$$TERM_NORMAL
-      export PS1="\[$${TERM_COLOR}\][bastion \W]$$ \[$${TERM_NORMAL}\]"
+      export PS1="\[$${TERM_COLOR}\][$${TF_ROLE} \W]$$ \[$${TERM_NORMAL}\]"
 
 repo_update: true
 repo_upgrade: all

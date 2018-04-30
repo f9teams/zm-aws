@@ -38,9 +38,9 @@ variable "db_fqdn" {
   type = "string"
 }
 
-# variable "swarm_security_group_id" {
-#   type = "string"
-# }
+variable "swarm_security_group_id" {
+  type = "string"
+}
 
 locals {
   environment  = "${terraform.workspace}"
@@ -63,5 +63,5 @@ locals {
   db_security_group_id = "${var.db_security_group_id}"
   db_fqdn              = "${var.db_fqdn}"
 
-  # swarm_security_group_id = "${var.swarm_security_group_id}"
+  swarm_security_group_id = "${var.swarm_security_group_id}"
 }

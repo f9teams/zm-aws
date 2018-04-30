@@ -1,5 +1,13 @@
+data "aws_availability_zones" "available" {}
+
+locals {
+  availability_zones = "${data.aws_availability_zones.available.names}"
+}
+
 module "platform" {
   source = "./modules/platform"
+
+  availability_zones = "${local.availability_zones}"
 
   r53_zone_id = "${local.r53_zone_id}"
   db_password = "${local.db_password}"
@@ -17,29 +25,37 @@ module "platform" {
   ]
 }
 
-# module "swarm" {
-#   source = "./modules/swarm"
+module "swarm" {
+  source = "./modules/swarm"
 
-#   user_public_keys     = "${local.user_public_keys}"
-#   deployer_key_pair_id = "${local.deployer_key_pair_id}"
-#   r53_zone_id          = "${local.r53_zone_id}"
-#   vpc_id               = "${module.platform.vpc_id}"
-#   public_subnet_ids    = "${module.platform.public_subnet_ids}"
+  availability_zones = "${local.availability_zones}"
 
-#   file_system {
-#     id                = "${module.platform.file_system_id}"
-#     security_group_id = "${module.platform.file_system_security_group_id}"
-#   }
-# }
+  vpc_id             = "${module.platform.vpc_id}"
+  private_subnet_ids = "${module.platform.private_subnet_ids}"
+
+  deployer_key_pair_id = "${local.deployer_key_pair_id}"
+  user_public_keys     = "${local.user_public_keys}"
+
+  r53_zone_id = "${local.r53_zone_id}"
+
+  file_system_id                = "${module.platform.file_system_id}"
+  file_system_security_group_id = "${module.platform.file_system_security_group_id}"
+
+  cache_security_group_id = "${module.platform.cache_security_group_id}"
+
+  db_security_group_id = "${module.platform.db_security_group_id}"
+}
 
 module "bastion" {
   source = "./modules/bastion"
 
+  vpc_id           = "${module.platform.vpc_id}"
+  public_subnet_id = "${module.platform.public_subnet_ids[0]}"
+
+  r53_zone_id = "${local.r53_zone_id}"
+
   user_public_keys     = "${local.user_public_keys}"
   deployer_key_pair_id = "${local.deployer_key_pair_id}"
-  r53_zone_id          = "${local.r53_zone_id}"
-  vpc_id               = "${module.platform.vpc_id}"
-  public_subnet_id     = "${module.platform.public_subnet_ids[0]}"
 
   file_system_id                = "${module.platform.file_system_id}"
   file_system_security_group_id = "${module.platform.file_system_security_group_id}"
@@ -49,7 +65,7 @@ module "bastion" {
   db_security_group_id = "${module.platform.db_security_group_id}"
   db_fqdn              = "${module.platform.db_fqdn}"
 
-  # swarm_security_group_id = "${module.swarm.security_group_id}"
+  swarm_security_group_id = "${module.swarm.security_group_id}"
 }
 
 # module "app" {
